@@ -86,7 +86,7 @@ export class MenuItemsService {
                 model: MenuItem,
                 as: 'children',
             }
-        ]
-    })
+        ],
+    });
   }
 }

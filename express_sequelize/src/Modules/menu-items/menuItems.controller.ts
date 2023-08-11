@@ -93,11 +93,20 @@ export class MenuItemsController extends Controller {
    ]
  */
 
+  transformToNestedStructure(menuItems: any, parentId = null) {
+    const nestedItems = menuItems.filter((item: any) => item.parentId === parentId).map((item: any) => ({
+        ...item,
+        children: this.transformToNestedStructure(menuItems, item.id)
+    }));
+    return nestedItems;
+  }
+
   async getMenuItems(req: Request, res: Response, next: NextFunction) {
     return await this.menuItemService.getMenuItems()
       .then((data) => {
         console.log(data);
-        res.json(data);
+        const nestedStructure = this.transformToNestedStructure(JSON.parse(JSON.stringify(data)), null);
+        res.json(nestedStructure);
       })
       .catch((e: Error) => {
         next(e);
